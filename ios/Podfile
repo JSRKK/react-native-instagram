@@ -81,6 +81,8 @@ target 'instagram' do
 
   pod 'RNFBFirestore', :path => '../node_modules/@react-native-firebase/firestore'
 
+  pod 'RNFBAuth', :path => '../node_modules/@react-native-firebase/auth'
+
   target 'instagramTests' do
     inherit! :complete
     # Pods for testing
