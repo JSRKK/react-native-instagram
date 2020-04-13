@@ -1,11 +1,11 @@
 import React from 'react'
-import Authentication from 'screens/authentication'
 import StoreProvider from 'src/store'
+import AppNavigator from 'src/navigation'
 
 const App = () => {
   return (
     <StoreProvider>
-      <Authentication />
+      <AppNavigator />
     </StoreProvider>
   )
 }
