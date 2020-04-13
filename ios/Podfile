@@ -83,6 +83,18 @@ target 'instagram' do
 
   pod 'RNFBAuth', :path => '../node_modules/@react-native-firebase/auth'
 
+  pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
+
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
+  pod 'RNCMaskedView', :path => '../node_modules/@react-native-community/masked-view'
+
+  pod 'RNScreens', :path => '../node_modules/react-native-screens'
+
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   target 'instagramTests' do
     inherit! :complete
     # Pods for testing

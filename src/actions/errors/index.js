@@ -1,4 +1,4 @@
-import {REGISTER_ERROR, FETCH_USER_ERROR, CLEAR_REGISTER_ERROR} from './type'
+import {REGISTER_ERROR, LOGIN_ERROR, FETCH_USER_ERROR, CLEAR_REGISTER_ERROR, CLEAR_LOGIN_ERROR} from './type'
 
 export const registerError = payload => ({
   type: REGISTER_ERROR,
@@ -9,7 +9,16 @@ export const clearRegisterError = () => ({
     type: CLEAR_REGISTER_ERROR
 })
 
+export const clearLoginError = () => ({
+  type: CLEAR_LOGIN_ERROR
+})
+
 export const fetchUserError = payload => ({
   type: FETCH_USER_ERROR,
   payload,
+})
+
+export const loginError = payload => ({
+  type: LOGIN_ERROR,
+  payload
 })

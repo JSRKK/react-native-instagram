@@ -16,15 +16,16 @@ const reducer = (state, action) => {
 }
 
 const initialState = {
-  authentication: {
-    userId: '',
-    firstName: '',
-    lastName: '',
+  user: {
+    userId: null,
+    email: null,
+    firstName: null,
+    lastName: null,
     isAuthen: false,
-    imgUrl: '',
+    photoURL: null,
   },
   errors: {
-    user: undefined,
+    user: null,
   },
 }
 
@@ -36,7 +37,7 @@ const StoreProvider = ({children}) => {
   }
 
   const middlewareDispatch = useMemo(() => applyMiddleware({dispatch, state}), [
-    state.authentication,
+    state.user.isAuthen,
   ])
 
   return (
