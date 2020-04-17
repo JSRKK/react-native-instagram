@@ -27,6 +27,9 @@ const initialState = {
   errors: {
     user: null,
   },
+  story: {
+    photo: null
+  }
 }
 
 const StoreProvider = ({children}) => {

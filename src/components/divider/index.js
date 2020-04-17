@@ -1,51 +1,52 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
-import {View, StyleSheet} from 'react-native'
+import {View} from 'react-native'
 import {Text} from 'react-native-elements'
+
+const Container = styled(View)`
+  width: 100%;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+`
+
+const Line = styled(View)`
+  position: relative;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-width: 0.5px;
+  border-color: #e5e5e5;
+`
+
+const WrapTitle = styled(View)`
+  max-width: 80%;
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+`
+
+const Title = styled(Text)`
+  flex: wrap;
+`
 
 const Divider = ({title, dividerStyles, titleStyles}) => {
   return (
-    <View style={styles.container}>
-      <View style={{...styles.line, ...dividerStyles}}>
+    <Container>
+      <Line style={dividerStyles}>
         {title ? (
-          <View style={styles.titleContainer}>
-            <Text style={{...styles.title, ...titleStyles}}>{title}</Text>
-          </View>
+          <WrapTitle>
+            <Title style={titleStyles}>{title}</Title>
+          </WrapTitle>
         ) : null}
-      </View>
-    </View>
+      </Line>
+    </Container>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    minHeight: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ffffff',
-  },
-  line: {
-    position: 'relative',
-    width: '100%',
-    height: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-  },
-  titleContainer: {
-    maxWidth: '80%',      
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ffffff',
-  },
-  title: {
-    flexWrap: 'wrap'
-  },
-})
 
 Divider.protoType = {
   title: PropTypes.string,
