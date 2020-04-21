@@ -1,20 +1,12 @@
-import React from 'react'
-import {View} from 'react-native'
+import styled from 'styled-components/native'
 
-const Header = ({children}) => {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 50,
-        backgroundColor: '#ffffff',
-        borderBottomColor: '#efefef',
-        borderBottomWidth: 1,
-      }}>
-      {children}
-    </View>
-  )
-}
+const Header = styled.View`
+  flex-direction: row;
+  align-items: center;
+  height: 50px;
+  background-color: #ffffff;
+  border-bottom-color: #efefef;
+  border-bottom-width: 1px;
+`
 
 export default Header

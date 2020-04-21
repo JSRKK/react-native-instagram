@@ -3,10 +3,17 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components/native'
 import _ from 'lodash'
 
-import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native'
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Dimensions
+} from 'react-native'
 import {Overlay} from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Ionicons'
-import {Header} from 'src/components'
+import Header from '../header'
 import {DEFAULT_PHOTO} from 'src/constants/image'
 import Tooltip from './tooltip'
 import Search from './search'
@@ -50,32 +57,72 @@ const WrapPersonIcon = styled.View`
 
 const TagPeople = ({isVisible, photo, onClose}) => {
   const [peoples, setPeoples] = useState([])
-  const [taged, setTaged] = useState()
-  const [tooltip, setTooltip] = useState({x: 0, y: 0})
-  const wrapTooltipRef = useRef()
+  const [taged, setTaged] = useState(false)
+  const [tooltip, setTooltip] = useState({})
+  const [layout, setLayout] = useState({})
+
+  const handleOnSelect = data => {
+    if (!_.isEmpty(tooltip)) {
+      setPeoples([...peoples, {...data, tooltip}])
+      clearState()
+    }
+  }
+
+  const clearState = () => {
+    setTooltip({})
+    setTaged(false)
+  }
+
+  const handleOnRemove = data => {
+    let newPeoples = _.cloneDeep(peoples)
+    const index = newPeoples.findIndex(people => people.id === data.id)
+    if (index > -1) {
+      newPeoples.splice(index, 1)
+      setPeoples(newPeoples)
+    }
+  }
+
+  const handleOnChangedPosition = (data, position) => {
+    let newPeoples = _.cloneDeep(peoples)
+    const index = newPeoples.findIndex(people => people.id === data.id)
+    if (index > -1) {
+      newPeoples[index].tooltip = position
+      setPeoples(newPeoples)
+    }
+  }
 
   return (
-    <View>
-      <Overlay isVisible={isVisible} fullScreen overlayStyle={{padding: 0}}>
-        {taged ? (
-          <Search />
-        ) : (
-          <Header>
-            <WrapCloseButton>
-              <TouchableOpacity onPress={onClose}>
-                <Icon name={'ios-close'} size={50} color={'gray'} />
-              </TouchableOpacity>
-            </WrapCloseButton>
-            <WrapTitle>
-              <Title>Tag People</Title>
-            </WrapTitle>
-            <WrapIcon>
-              <TouchableOpacity onPress={() => {}}>
-                <Icon name={'ios-checkmark'} size={50} color={'#5b94e2'} />
-              </TouchableOpacity>
-            </WrapIcon>
-          </Header>
-        )}
+    <Overlay isVisible={isVisible} overlayStyle={{padding: 0}} fullScreen>
+      <KeyboardAvoidingView
+        behavior={'height'}
+        style={{flexGrow: 1, height: Dimensions.get('screen').height - 30}}
+        enabled={false}>
+        <View>
+          {taged ? (
+            <Search onSelect={handleOnSelect} />
+          ) : (
+            <Header style={{background: 'tranparent'}}>
+              <WrapCloseButton>
+                <TouchableOpacity
+                  onPress={() => {
+                    setPeoples([])
+                    clearState()
+                    onClose()
+                  }}>
+                  <Icon name={'ios-close'} size={50} color={'gray'} />
+                </TouchableOpacity>
+              </WrapCloseButton>
+              <WrapTitle>
+                <Title>Tag People</Title>
+              </WrapTitle>
+              <WrapIcon>
+                <TouchableOpacity onPress={() => {}}>
+                  <Icon name={'ios-checkmark'} size={50} color={'#5b94e2'} />
+                </TouchableOpacity>
+              </WrapIcon>
+            </Header>
+          )}
+        </View>
         <View style={{flex: 0.5}}>
           <Image
             source={!_.isEmpty(photo) ? {uri: photo} : DEFAULT_PHOTO}
@@ -87,31 +134,40 @@ const TagPeople = ({isVisible, photo, onClose}) => {
             </WrapPersonIcon>
           ) : null}
           <WrapTooltip
-            onLayout={event => {
-              wrapTooltipRef.current = event.nativeEvent.layout
-            }}
-            onTouchStart={e => {
-              const {width, height} = wrapTooltipRef.current
-              let {locationX, locationY} = e.nativeEvent
+            onLayout={e => setLayout(e.nativeEvent.layout)}
+            onStartShouldSetResponder={() => true}
+            onResponderStart={e => {
+              e.stopPropagation()
+              const x = parseFloat(e.nativeEvent.locationX, 2)
+              const y = parseFloat(e.nativeEvent.locationY, 2)
 
-              if (locationX - 30 < 0) {
-                locationX += 30 - locationX
-              }
-              if (locationX + 50 > width) {
-                locationX -= locationX + 60 - width
-              }
-              if (locationY + 35 > height) {
-                locationY -= locationY + 35 - height
-              }
+              setTooltip({x, y})
               setTaged(prevState => !prevState)
-              setTooltip({x: locationX, y: locationY})
             }}>
-            {taged ? (
+            {taged && !_.isEmpty(tooltip) ? (
               <Tooltip
                 position={{x: tooltip.x, y: tooltip.y}}
                 title={`Who's this?`}
+                parentLayout={layout}
+                moveable={true}
               />
             ) : null}
+            {!_.isEmpty(peoples)
+              ? peoples.map((data, index) => (
+                  <Tooltip
+                    key={index}
+                    position={{x: data.tooltip.x, y: data.tooltip.y}}
+                    title={`${data.fullName}`}
+                    onRemove={() => handleOnRemove(data)}
+                    onChangedPosition={position =>
+                      handleOnChangedPosition(data, position)
+                    }
+                    parentLayout={layout}
+                    removeble={true}
+                    moveable={true}
+                  />
+                ))
+              : null}
           </WrapTooltip>
         </View>
         <View
@@ -125,19 +181,19 @@ const TagPeople = ({isVisible, photo, onClose}) => {
             </>
           )}
         </View>
-      </Overlay>
-    </View>
+      </KeyboardAvoidingView>
+    </Overlay>
   )
 }
 
 TagPeople.protoType = {
   isVisible: PropTypes.bool,
-  photoUri: PropTypes.string,
+  photoUri: PropTypes.string
 }
 
 TagPeople.defaultProps = {
   isVisible: false,
-  photo: '',
+  photo: ''
 }
 
 export default TagPeople

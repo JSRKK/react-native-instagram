@@ -29,6 +29,9 @@ const initialState = {
   },
   story: {
     photo: null
+  },
+  search: {
+    userLists: []
   }
 }
 

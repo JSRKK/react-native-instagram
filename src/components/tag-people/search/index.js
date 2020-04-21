@@ -7,20 +7,21 @@ import SearchModal from './search-modal'
 const Container = styled.View`
   flex-direction: row;
   align-items: center;
+  height: 50px;
 `
 const WrapSearchIcon = styled.View`
-    flex: 0.12;
-    align-items: flex-end;
-    justify-content: center;
+  flex: 0.12;
+  align-items: flex-end;
+  justify-content: center;
 `
 
 const WrapTextInput = styled.View`
   flex: 0.88;
   justify-content: center;
-  padding-left: 5;
+  padding-left: 5px;
 `
 
-const Search = () => {
+const Search = ({onSelect}) => {
   const [search, setSearch] = useState('')
   const [modalVisible, setModalVisible] = useState(false)
   return (
@@ -33,11 +34,12 @@ const Search = () => {
           placeholder={'Search for a user'}
           onChangeText={value => {
             setSearch(value)
-            if(!modalVisible && value.trim()){
-                setModalVisible(true)
+            if (!modalVisible && value.trim()) {
+              setModalVisible(true)
             }
           }}
           value={search}
+          disableFullscreenUI={true}
           autoFocus
         />
       </WrapTextInput>
@@ -46,8 +48,12 @@ const Search = () => {
         search={search}
         setSearch={setSearch}
         onCancle={() => {
-            setSearch('')
-            setModalVisible(false)
+          setSearch('')
+          setModalVisible(false)
+        }}
+        onSelect={(data) => {
+          setModalVisible(false)
+          onSelect(data)
         }}
       />
     </Container>
